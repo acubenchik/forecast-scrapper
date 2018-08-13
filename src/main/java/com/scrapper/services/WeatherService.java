@@ -6,6 +6,8 @@ import io.reactivex.schedulers.Schedulers;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 import io.vertx.reactivex.SingleHelper;
+import io.vertx.reactivex.core.RxHelper;
+import io.vertx.reactivex.core.Vertx;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -17,6 +19,12 @@ import java.util.List;
 
 public class WeatherService implements IWeatherService {
 
+    private Vertx vertx;
+
+    public WeatherService(Vertx vertx) {
+        this.vertx = vertx;
+    }
+
     @Override
     public IWeatherService averageRainPerWeek(Handler<AsyncResult<Integer>> resultHandler) {
         this.fetchData().scan(0, (i, k) -> {
@@ -27,10 +35,13 @@ public class WeatherService implements IWeatherService {
         return this;
     }
 
-    private Flowable<DataElement> fetchData() {
-        return Flowable.fromArray("https://www.mountain-forecast.com/peaks/Rysy/forecasts/2499")
-                .parallel(2).runOn(Schedulers.io())
+    public Flowable<DataElement> fetchData() {
+        System.out.println("Hmm outside " + Thread.currentThread().getName());
+        return Flowable.fromArray("https://www.mountain-forecast.com/peaks/Rysy/forecasts/2499",
+                "https://www.mountain-forecast.com/peaks/Koscielec/forecasts/2155")
+                .parallel(2).runOn(RxHelper.blockingScheduler(vertx, false))
                 .flatMap(url -> {
+                    System.out.println("Hmm " + Thread.currentThread().getName());
                     Document doc = Jsoup.connect(url).get();
                     Elements rainLevels = doc.select("tr.forecast__table-rain td");
                     Elements snowLevels = doc.select("tr.forecast__table-snow td");

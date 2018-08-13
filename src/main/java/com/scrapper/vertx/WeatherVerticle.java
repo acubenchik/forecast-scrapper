@@ -17,7 +17,7 @@ public class WeatherVerticle extends AbstractVerticle {
     @Override
     public void init(Vertx vertx, Context context) {
         super.init(vertx, context);
-        this.weatherService = new WeatherService();
+        this.weatherService = new WeatherService(this.vertx);
     }
 
     @Override
