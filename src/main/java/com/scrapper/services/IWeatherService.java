@@ -12,5 +12,5 @@ import io.vertx.core.Handler;
 public interface IWeatherService {
 
     @Fluent
-    IWeatherService averageRainPerWeek(Handler<AsyncResult<Integer>> resultHandler);
+    IWeatherService totalRainPerWeek(Handler<AsyncResult<Integer>> resultHandler);
 }

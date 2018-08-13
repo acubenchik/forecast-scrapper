@@ -1,5 +1,6 @@
 package com.scrapper.vertx;
 
+import com.scrapper.services.FetcherService;
 import com.scrapper.services.IWeatherService;
 import com.scrapper.services.WeatherService;
 import io.vertx.core.Context;
@@ -17,7 +18,7 @@ public class WeatherVerticle extends AbstractVerticle {
     @Override
     public void init(Vertx vertx, Context context) {
         super.init(vertx, context);
-        this.weatherService = new WeatherService(this.vertx);
+        this.weatherService = new WeatherService(this.vertx, new FetcherService());
     }
 
     @Override
